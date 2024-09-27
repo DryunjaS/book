@@ -1,5 +1,5 @@
 import * as React from "react"
-import { styled, useTheme } from "@mui/material/styles"
+import { styled, ThemeProvider, useTheme } from "@mui/material/styles"
 import Box from "@mui/material/Box"
 import Drawer from "@mui/material/Drawer"
 import CssBaseline from "@mui/material/CssBaseline"
@@ -18,7 +18,9 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import ArticleIcon from "@mui/icons-material/Article"
 import SettingsIcon from "@mui/icons-material/Settings"
-import MebuSettings from "../ui/MenuSettings" // Импорт вашего компонента настроек
+import MebuSettings from "../ui/MenuSettings"
+import { lightTheme, darkTheme } from "../../theme/theme"
+import { useSelector } from "react-redux"
 
 const drawerWidth = 240
 
@@ -83,7 +85,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function MainLayout({ children }) {
 	const theme = useTheme()
 	const [open, setOpen] = React.useState(false)
-	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null) // Изменено на null
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
+	const reduxTheme = useSelector((state) => state.settings.theme)
+	const currentTheme = reduxTheme === "light" ? lightTheme : darkTheme
 
 	const handleDrawerOpen = () => {
 		setOpen(true)
@@ -98,79 +103,81 @@ export default function MainLayout({ children }) {
 	}
 
 	return (
-		<Box sx={{ display: "flex" }}>
-			<CssBaseline />
-			<AppBar position='fixed' open={open}>
-				<Toolbar>
-					<IconButton
-						color='inherit'
-						aria-label='open drawer'
-						onClick={handleDrawerOpen}
-						edge='start'
-						sx={[
-							{
-								mr: 2,
-							},
-							open && { display: "none" },
-						]}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography variant='h6' noWrap component='div'>
-						Оглавление
-					</Typography>
-					<Box sx={{ marginLeft: "auto" }}>
-						<IconButton color='inherit' onClick={toggleMenu}>
-							<SettingsIcon />
+		<ThemeProvider theme={currentTheme}>
+			<Box sx={{ display: "flex" }}>
+				<CssBaseline />
+				<AppBar position='fixed' open={open}>
+					<Toolbar>
+						<IconButton
+							color='inherit'
+							aria-label='open drawer'
+							onClick={handleDrawerOpen}
+							edge='start'
+							sx={[
+								{
+									mr: 2,
+								},
+								open && { display: "none" },
+							]}
+						>
+							<MenuIcon />
 						</IconButton>
-						<MebuSettings
-							anchorEl={anchorEl}
-							open={Boolean(anchorEl)}
-							onClose={() => setAnchorEl(null)}
-						/>
-					</Box>
-				</Toolbar>
-			</AppBar>
-			<Drawer
-				sx={{
-					width: drawerWidth,
-					flexShrink: 0,
-					"& .MuiDrawer-paper": {
+						<Typography variant='h6' noWrap component='div'>
+							Оглавление
+						</Typography>
+						<Box sx={{ marginLeft: "auto" }}>
+							<IconButton color='inherit' onClick={toggleMenu}>
+								<SettingsIcon />
+							</IconButton>
+							<MebuSettings
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={() => setAnchorEl(null)}
+							/>
+						</Box>
+					</Toolbar>
+				</AppBar>
+				<Drawer
+					sx={{
 						width: drawerWidth,
-						boxSizing: "border-box",
-					},
-				}}
-				variant='persistent'
-				anchor='left'
-				open={open}
-			>
-				<DrawerHeader>
-					<IconButton onClick={handleDrawerClose}>
-						{theme.direction === "ltr" ? (
-							<ChevronLeftIcon />
-						) : (
-							<ChevronRightIcon />
-						)}
-					</IconButton>
-				</DrawerHeader>
-				<Divider />
-				<List>
-					{["Глава", "Глава", "Глава", "Глава"].map((text, index) => (
-						<ListItem key={text} disablePadding>
-							<ListItemButton>
-								<ListItemIcon>
-									<ArticleIcon />
-								</ListItemIcon>
-								<ListItemText primary={`${text} ${index + 1}`} />
-							</ListItemButton>
-						</ListItem>
-					))}
-				</List>
-			</Drawer>
-			<Main open={open}>
-				<DrawerHeader />
-				{children}
-			</Main>
-		</Box>
+						flexShrink: 0,
+						"& .MuiDrawer-paper": {
+							width: drawerWidth,
+							boxSizing: "border-box",
+						},
+					}}
+					variant='persistent'
+					anchor='left'
+					open={open}
+				>
+					<DrawerHeader>
+						<IconButton onClick={handleDrawerClose}>
+							{theme.direction === "ltr" ? (
+								<ChevronLeftIcon />
+							) : (
+								<ChevronRightIcon />
+							)}
+						</IconButton>
+					</DrawerHeader>
+					<Divider />
+					<List>
+						{["Глава", "Глава", "Глава", "Глава"].map((text, index) => (
+							<ListItem key={text} disablePadding>
+								<ListItemButton>
+									<ListItemIcon>
+										<ArticleIcon />
+									</ListItemIcon>
+									<ListItemText primary={`${text} ${index + 1}`} />
+								</ListItemButton>
+							</ListItem>
+						))}
+					</List>
+				</Drawer>
+				<Main open={open}>
+					<DrawerHeader />
+					{children}
+				</Main>
+			</Box>
+		</ThemeProvider>
 	)
 }

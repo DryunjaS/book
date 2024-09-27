@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-	theme: "Светлая",
+	theme: "light",
 	fontSize: 16,
 }
 
-const themeSlice = createSlice({
+const settingsSlice = createSlice({
 	name: "theme",
 	initialState,
 	reducers: {
 		toggleTheme: (state) => {
-			state.theme = state.theme === "Светлая" ? "Темная" : "Светлая"
+			state.theme = state.theme === "light" ? "dark" : "light"
 		},
 		increaseFontSize: (state) => {
 			state.fontSize += 1
@@ -27,6 +27,6 @@ const themeSlice = createSlice({
 })
 
 export const { toggleTheme, increaseFontSize, decreaseFontSize, setFontSize } =
-	themeSlice.actions
+	settingsSlice.actions
 
-export default themeSlice.reducer
+export default settingsSlice.reducer

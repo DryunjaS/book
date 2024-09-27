@@ -23,8 +23,8 @@ export default function MebuSettings({
 	onClose: () => void
 }) {
 	const dispatch = useDispatch()
-	const theme = useSelector((state) => state.theme.theme)
-	const fontSize = useSelector((state) => state.theme.fontSize)
+	const theme = useSelector((state) => state.settings.theme)
+	const fontSize = useSelector((state) => state.settings.fontSize)
 
 	return (
 		<React.Fragment>
@@ -32,7 +32,7 @@ export default function MebuSettings({
 				anchorEl={anchorEl}
 				id='account-menu'
 				open={open}
-				onClose={onClose} // Добавлен onClose для закрытия меню
+				onClose={onClose}
 				slotProps={{
 					paper: {
 						elevation: 0,
@@ -40,6 +40,7 @@ export default function MebuSettings({
 							overflow: "visible",
 							filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
 							mt: 1.5,
+							width: 200,
 							"& .MuiAvatar-root": {
 								width: 32,
 								height: 32,
@@ -75,13 +76,13 @@ export default function MebuSettings({
 				<Divider />
 				<MenuItem onClick={() => dispatch(toggleTheme())}>
 					<ListItemIcon>
-						{theme === "Светлая" ? (
+						{theme === "light" ? (
 							<WbSunnyIcon fontSize='small' />
 						) : (
 							<NightlightIcon fontSize='small' />
 						)}
 					</ListItemIcon>
-					{theme} тема
+					{theme === "light" ? "Светлая" : "Темная"} тема
 				</MenuItem>
 			</Menu>
 		</React.Fragment>

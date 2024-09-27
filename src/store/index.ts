@@ -1,10 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit"
-import themeReducer from "./SettingSlice"
+import settingsReducer from "./SettingSlice"
+import { persistStore, persistReducer } from "redux-persist"
+import storage from "redux-persist/lib/storage"
+
+const persistConfig = {
+	key: "root",
+	storage,
+}
+const persistedReducer = persistReducer(persistConfig, settingsReducer)
 
 const store = configureStore({
 	reducer: {
-		theme: themeReducer,
+		settings: persistedReducer,
 	},
 })
 
+export const persistor = persistStore(store)
 export default store
